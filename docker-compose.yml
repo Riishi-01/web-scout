@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  iwsa:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: iwsa-scraper
+    environment:
+      - ENVIRONMENT=docker
+      - MONGODB_URI=mongodb://mongodb:27017
+      - MONGODB_DATABASE=iwsa_docker
+      - LOG_LEVEL=INFO
+      - ENABLE_MONITORING=true
+    volumes:
+      - ./exports:/app/exports
+      - ./logs:/app/logs
+    depends_on:
+      - mongodb
+    networks:
+      - iwsa-network
+    restart: unless-stopped
+    
+  mongodb:
+    image: mongo:6.0
+    container_name: iwsa-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=iwsa_docker
+    volumes:
+      - mongodb_data:/data/db
+      - ./docker/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - iwsa-network
+    restart: unless-stopped
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: iwsa-mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_BASICAUTH_USERNAME=admin
+      - ME_CONFIG_BASICAUTH_PASSWORD=admin123
+    depends_on:
+      - mongodb
+    networks:
+      - iwsa-network
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  iwsa-network:
+    driver: bridge

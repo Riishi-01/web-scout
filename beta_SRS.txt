@@ -1,0 +1,432 @@
+# Software Requirements Specification
+## Local Desktop Scraper with ChatGPT Training Pipeline
+
+**Version**: 2.0  
+**Date**: January 2025  
+**Architecture**: Desktop Application with Local AI Training
+
+---
+
+## 1. System Overview
+
+### 1.1 Purpose
+Build a desktop AI-powered scraping application that uses ChatGPT API for beta testing and user interactions, while automatically collecting training data to fine-tune a local TinyLlama model for offline operation.
+
+### 1.2 Core Objectives
+- **Beta with ChatGPT**: High-quality user experience during development
+- **Local Model Training**: Automatic dataset generation from ChatGPT interactions
+- **Offline Transition**: Gradual migration from ChatGPT to trained TinyLlama
+- **Local Storage**: All data saved to local directories
+- **Desktop-First**: No web hosting or cloud dependencies
+
+### 1.3 System Architecture
+```
+Desktop App → ChatGPT API (Beta) → Training Data Collection → TinyLlama Training → Local Model
+```
+
+---
+
+## 2. Desktop Application Architecture
+
+### 2.1 Core Components
+
+#### **2.1.1 Desktop UI (Electron)**
+- **Framework**: Electron + React for cross-platform desktop app
+- **Interface**: Simple chat-based interface for user prompts
+- **Preview**: 50-row data preview before full extraction
+- **Progress**: Real-time scraping progress monitoring
+- **Settings**: ChatGPT API key configuration
+
+#### **2.1.2 ChatGPT Integration (Beta Phase)**
+- **API**: OpenAI ChatGPT API (GPT-4 Turbo)
+- **Purpose**: High-quality strategy generation during beta
+- **Data Collection**: Log all interactions for training data
+- **Cost Tracking**: Monitor token usage and costs
+- **Fallback**: Graceful degradation when API unavailable
+
+#### **2.1.3 Training Data Pipeline**
+- **Collection**: Automatic logging of HTML → Strategy pairs
+- **Validation**: Quality scoring and filtering
+- **Storage**: Local SQLite database for training examples
+- **Export**: Training dataset generation for TinyLlama
+- **Privacy**: All data remains local, no external transmission
+
+#### **2.1.4 Local Model Integration**
+- **Model**: TinyLlama 1.1B fine-tuned for scraping tasks
+- **Inference**: ONNX Runtime for fast local execution
+- **Transition**: Gradual shift from ChatGPT to local model
+- **Validation**: Quality comparison between models
+
+#### **2.1.5 Scraping Engine**
+- **Browser**: Playwright headless for web scraping
+- **Strategy**: Execute ChatGPT/TinyLlama generated strategies
+- **Storage**: Save results to local directories (CSV/JSON)
+- **Monitoring**: Track success rates and performance
+
+---
+
+## 3. ChatGPT Integration (Beta Phase)
+
+### 3.1 API Configuration (F001-F010)
+
+**F001: ChatGPT API Setup**
+```yaml
+chatgpt_config:
+  model: "gpt-4-turbo"
+  max_tokens: 4000
+  temperature: 0.1
+  timeout: 30
+  retry_attempts: 3
+  cost_tracking: true
+```
+
+**F002: Prompt Engineering**
+```python
+STRATEGY_PROMPT = """
+Analyze this HTML structure and generate a scraping strategy:
+
+HTML Sample: {html_content}
+User Goal: {user_intent}
+Target Data: {target_fields}
+
+Generate:
+1. CSS selectors for each data field
+2. Extraction strategy (pagination, filters)
+3. Data validation rules
+4. Error handling approach
+
+Format as JSON with confidence scores.
+"""
+```
+
+**F003: Request Management**
+- Token counting and cost tracking
+- Request queuing and rate limiting
+- Response caching for similar requests
+- Error handling and retry logic
+
+**F004: Training Data Collection**
+```python
+class TrainingDataCollector:
+    def log_interaction(self, html_input, chatgpt_output, user_feedback):
+        """
+        Automatically collect training examples:
+        - Input: Compressed HTML + user intent
+        - Output: ChatGPT strategy + selectors
+        - Validation: User feedback and success rate
+        """
+```
+
+---
+
+## 4. Training Data Pipeline
+
+### 4.1 Data Collection (F005-F015)
+
+**F005: Automatic Logging**
+- Log every ChatGPT interaction with metadata
+- Capture user feedback and corrections
+- Track extraction success rates
+- Store validation results
+
+**F006: HTML Compression**
+```python
+def compress_html_for_training(html_content):
+    """
+    Compress HTML for training efficiency:
+    - Remove scripts, styles, comments
+    - Extract data containers only
+    - Preserve structure but minimize tokens
+    - Target: 95% size reduction
+    """
+```
+
+**F007: Quality Filtering**
+- Validate ChatGPT responses for correctness
+- Filter out failed or low-quality examples
+- Score examples based on extraction success
+- Remove duplicates and similar patterns
+
+**F008: Dataset Generation**
+```python
+class DatasetBuilder:
+    def create_training_dataset(self):
+        """
+        Generate TinyLlama training dataset:
+        - Format: Instruction-following format
+        - Size: 10K+ high-quality examples
+        - Validation: Hold-out test set
+        - Export: JSON/JSONL for training
+        """
+```
+
+---
+
+## 5. Local Model Training
+
+### 5.1 TinyLlama Fine-Tuning (F010-F020)
+
+**F010: Training Infrastructure**
+- Local GPU training (optional)
+- Google Colab Pro integration for training
+- Automated training pipeline
+- Model versioning and checkpoints
+
+**F011: Fine-Tuning Configuration**
+```yaml
+training_config:
+  base_model: "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
+  technique: "LoRA"
+  learning_rate: 0.0001
+  batch_size: 4
+  epochs: 3
+  validation_split: 0.2
+```
+
+**F012: Model Optimization**
+- ONNX conversion for deployment
+- Quantization (INT8) for efficiency
+- Memory optimization (<1.5GB usage)
+- Cross-platform compatibility
+
+**F013: Quality Validation**
+```python
+def validate_model_quality(tinyllama_model, test_dataset):
+    """
+    Compare TinyLlama vs ChatGPT performance:
+    - Extraction accuracy comparison
+    - Response time benchmarks
+    - Resource usage metrics
+    - User satisfaction scores
+    """
+```
+
+---
+
+## 6. Local Storage System
+
+### 6.1 Data Management (F015-F025)
+
+**F015: Local Directory Structure**
+```
+~/scraper_data/
+├── projects/
+│   ├── project_1/
+│   │   ├── raw_data.json
+│   │   ├── processed_data.csv
+│   │   └── metadata.json
+├── training_data/
+│   ├── interactions.db
+│   ├── training_set.jsonl
+│   └── validation_set.jsonl
+├── models/
+│   ├── tinyllama_v1.onnx
+│   ├── tinyllama_v2.onnx
+│   └── model_metrics.json
+└── cache/
+    ├── html_cache/
+    └── strategy_cache/
+```
+
+**F016: Data Export Formats**
+- **CSV**: Structured data with headers
+- **JSON**: Raw data with metadata
+- **Excel**: Formatted reports with charts
+- **PDF**: Summary reports and insights
+
+**F017: Project Management**
+- Create and manage scraping projects
+- Save and load project configurations
+- Track project history and versions
+- Export project data and settings
+
+---
+
+## 7. User Experience Design
+
+### 7.1 Desktop Interface (F020-F030)
+
+**F020: Main Application Window**
+- Chat interface for natural language prompts
+- Project manager sidebar
+- Real-time progress monitoring
+- Settings and configuration panel
+
+**F021: Workflow Interface**
+```
+1. User Input: "Scrape Upwork jobs paying >$500"
+2. Site Analysis: Show detected structure
+3. Strategy Preview: Display ChatGPT strategy
+4. Sample Preview: Show 50 sample results
+5. Execution: Full scraping with progress
+6. Results: Save to local directory
+```
+
+**F022: Model Transition UI**
+- Show current model (ChatGPT vs TinyLlama)
+- Training progress indicators
+- Quality comparison metrics
+- Manual model switching option
+
+**F023: Settings Management**
+- ChatGPT API key configuration
+- Output directory selection
+- Model preferences and fallbacks
+- Performance tuning options
+
+---
+
+## 8. Technical Implementation
+
+### 8.1 Technology Stack
+
+```yaml
+Desktop Application:
+  framework: "Electron 28+"
+  frontend: "React 18 + TypeScript"
+  styling: "Tailwind CSS"
+  state: "Zustand"
+
+Backend:
+  runtime: "Python 3.11 embedded"
+  web_server: "FastAPI (local)"
+  scraping: "Playwright"
+  ai_inference: "ONNX Runtime"
+
+Data Storage:
+  database: "SQLite"
+  cache: "Local file system"
+  exports: "CSV/JSON/Excel"
+  training: "JSONL files"
+
+AI Integration:
+  beta_api: "OpenAI ChatGPT API"
+  local_model: "TinyLlama ONNX"
+  training: "Transformers + LoRA"
+  optimization: "ONNX + Quantization"
+```
+
+### 8.2 Performance Requirements
+
+| Component | Target | Measurement |
+|-----------|--------|-------------|
+| App Startup | <5s | Cold start to ready |
+| ChatGPT Response | <10s | Strategy generation |
+| Local Model Response | <2s | TinyLlama inference |
+| Data Preview | <30s | 50-row sample |
+| Full Extraction | Variable | Based on site size |
+| Memory Usage | <2GB | Peak application memory |
+
+---
+
+## 9. Training Strategy
+
+### 9.1 Data Collection Timeline
+
+**Week 1-4: Initial Collection**
+- 500+ ChatGPT interactions
+- Focus on common websites (Amazon, LinkedIn, etc.)
+- Collect user feedback and corrections
+- Build initial training dataset
+
+**Week 5-8: Dataset Expansion** 
+- 2000+ total interactions
+- Cover edge cases and complex sites
+- Improve data quality through filtering
+- Prepare for first model training
+
+**Week 9-12: Model Training & Testing**
+- Train first TinyLlama version
+- A/B testing vs ChatGPT
+- Iterative improvement based on results
+- Prepare for model deployment
+
+### 9.2 Quality Metrics
+
+**Training Data Quality**:
+- Extraction success rate >90%
+- User satisfaction score >4/5
+- Strategy correctness validation
+- Coverage of common website patterns
+
+**Model Performance**:
+- Accuracy vs ChatGPT >85%
+- Response time <2 seconds
+- Memory usage <1.5GB
+- Cross-platform compatibility
+
+---
+
+## 10. Cost Analysis
+
+### 10.1 ChatGPT API Costs (Beta Phase)
+
+**Cost Estimation**:
+- Input: 2K tokens per request × $0.0015 = $0.003
+- Output: 1K tokens per request × $0.002 = $0.002
+- **Total per request: $0.005**
+
+**Beta Budget**:
+- 10K requests for training data collection
+- Total cost: $50 for complete dataset
+- One-time investment vs ongoing operational costs
+
+### 10.2 Transition Economics
+
+**Beta Phase**: $50 for training data collection
+**Production Phase**: $0 operational costs (local model)
+**ROI Timeline**: Immediate savings after model deployment
+
+---
+
+## 11. Implementation Phases
+
+### 11.1 Phase 1: ChatGPT Beta (Month 1)
+- Desktop app with ChatGPT integration
+- Basic scraping functionality
+- Training data collection system
+- Local storage implementation
+
+### 11.2 Phase 2: Training Pipeline (Month 2)
+- Dataset generation and validation
+- TinyLlama fine-tuning infrastructure
+- Model quality testing
+- A/B testing framework
+
+### 11.3 Phase 3: Local Model Deployment (Month 3)
+- TinyLlama integration and optimization
+- Gradual transition from ChatGPT
+- Performance monitoring and improvement
+- Final optimization and distribution
+
+### 11.4 Phase 4: Distribution & Polish (Month 4)
+- Packaging for distribution
+- Documentation and tutorials
+- Community feedback integration
+- Open source release preparation
+
+---
+
+## 12. Success Criteria
+
+### 12.1 Technical Goals
+- **Model Accuracy**: TinyLlama achieves 85%+ of ChatGPT quality
+- **Performance**: <2s response time for local model
+- **Reliability**: 95%+ successful extractions
+- **Efficiency**: <2GB memory usage
+
+### 12.2 User Experience Goals
+- **Setup Time**: <5 minutes from download to first scrape
+- **Success Rate**: 90%+ of user tasks completed successfully
+- **Satisfaction**: 4.5+/5 user rating
+- **Adoption**: 1000+ downloads in first month
+
+### 12.3 Business Goals
+- **Cost Efficiency**: Eliminate ongoing API costs after training
+- **Open Source Impact**: Active community contributions
+- **Market Position**: Leading free local scraping solution
+- **Sustainability**: Self-sufficient development model
+
+---
+
+This SRS focuses on the simple, effective approach: ChatGPT for beta quality → collect training data → train local TinyLlama → eliminate ongoing costs while maintaining desktop-first, local-storage architecture.

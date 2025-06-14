@@ -1,0 +1,18 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Local Web Scraper
+Comment=AI-powered web scraping application
+Exec=local-web-scraper %U
+Icon=local-web-scraper
+StartupNotify=true
+NoDisplay=false
+Categories=Development;WebDevelopment;
+Keywords=scraping;web;data;ai;automation;
+MimeType=application/x-web-scraper-config;
+Actions=NewWindow;
+
+[Desktop Action NewWindow]
+Name=New Window
+Exec=local-web-scraper --new-window
+Icon=local-web-scraper

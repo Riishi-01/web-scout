@@ -1,0 +1,316 @@
+name: Intelligent Web Scraping Agent
+
+on:
+  workflow_dispatch:
+    inputs:
+      prompt:
+        description: 'Natural language scraping prompt'
+        required: true
+        type: string
+      llm_api_key:
+        description: 'LLM API key (OpenAI/Claude)'
+        required: true
+        type: string
+      llm_provider:
+        description: 'LLM Provider'
+        required: false
+        default: 'openai'
+        type: choice
+        options:
+          - openai
+          - claude
+          - huggingface
+      scraping_profile:
+        description: 'Scraping profile'
+        required: false
+        default: 'balanced'
+        type: choice
+        options:
+          - conservative
+          - balanced
+          - aggressive
+          - stealth
+      export_format:
+        description: 'Export format'
+        required: false
+        default: 'sheets'
+        type: choice
+        options:
+          - sheets
+          - csv
+          - json
+          - excel
+      max_pages:
+        description: 'Maximum pages to scrape'
+        required: false
+        default: '100'
+        type: string
+
+env:
+  PYTHON_VERSION: '3.9'
+
+jobs:
+  scrape:
+    name: Execute Scraping Job
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libgconf-2-4 \
+            libxss1 \
+            libxtst6 \
+            libxrandr2 \
+            libasound2 \
+            libpangocairo-1.0-0 \
+            libatk1.0-0 \
+            libcairo-gobject2 \
+            libgtk-3-0 \
+            libgdk-pixbuf2.0-0
+      
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Install Playwright browsers
+        run: |
+          playwright install chromium
+          playwright install-deps chromium
+      
+      - name: Configure environment
+        run: |
+          # Create .env file
+          cat > .env << EOF
+          # LLM Configuration
+          PRIMARY_LLM_PROVIDER=${{ github.event.inputs.llm_provider }}
+          OPENAI_API_KEY=${{ github.event.inputs.llm_api_key }}
+          CLAUDE_API_KEY=${{ github.event.inputs.llm_api_key }}
+          HF_API_KEY=
+          
+          # Storage Configuration - Use GitHub's MongoDB instance or Atlas free tier
+          MONGODB_URI=${{ secrets.MONGODB_URI || 'mongodb://localhost:27017' }}
+          MONGODB_DATABASE=iwsa_github_actions
+          MONGODB_COLLECTION=scraped_data
+          
+          # Google Sheets Configuration
+          GOOGLE_CREDENTIALS=${{ secrets.GOOGLE_CREDENTIALS }}
+          
+          # Scraping Configuration
+          MAX_CONCURRENT_BROWSERS=2
+          DEFAULT_TIMEOUT=30
+          RATE_LIMIT_DELAY=2
+          MAX_PAGES_PER_SESSION=${{ github.event.inputs.max_pages }}
+          
+          # Performance Configuration
+          MEMORY_LIMIT=512MB
+          CPU_LIMIT=2
+          
+          # Environment
+          ENVIRONMENT=production
+          DEBUG=false
+          ENABLE_MONITORING=true
+          LOG_LEVEL=INFO
+          EOF
+      
+      - name: Validate configuration
+        run: |
+          echo "Validating IWSA configuration..."
+          python -c "
+          from iwsa.config import Settings
+          try:
+              settings = Settings()
+              print(f'✓ Configuration loaded successfully')
+              print(f'✓ Primary LLM provider: {settings.llm.primary_provider}')
+              print(f'✓ Has LLM provider: {settings.has_llm_provider()}')
+              print(f'✓ MongoDB configured: {bool(settings.storage.mongodb_uri)}')
+              print(f'✓ Max pages: {getattr(settings.scraping, \"max_pages_per_session\", \"not set\")}')
+          except Exception as e:
+              print(f'✗ Configuration error: {e}')
+              exit(1)
+          "
+      
+      - name: Execute scraping
+        id: scraping
+        run: |
+          echo "Starting intelligent web scraping..."
+          echo "Prompt: ${{ github.event.inputs.prompt }}"
+          echo "Provider: ${{ github.event.inputs.llm_provider }}"
+          echo "Profile: ${{ github.event.inputs.scraping_profile }}"
+          echo "Export: ${{ github.event.inputs.export_format }}"
+          
+          # Set environment variables for the scraping session
+          export PROMPT="${{ github.event.inputs.prompt }}"
+          export SCRAPING_PROFILE="${{ github.event.inputs.scraping_profile }}"
+          export EXPORT_FORMAT="${{ github.event.inputs.export_format }}"
+          
+          # Run the scraper
+          python main.py 2>&1 | tee scraping_log.txt
+          
+          # Check if scraping was successful
+          if [ $? -eq 0 ]; then
+            echo "✓ Scraping completed successfully"
+            echo "scraping_success=true" >> $GITHUB_OUTPUT
+          else
+            echo "✗ Scraping failed"
+            echo "scraping_success=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+      
+      - name: Upload scraping logs
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: scraping-logs
+          path: |
+            scraping_log.txt
+            *.log
+          retention-days: 7
+      
+      - name: Upload exported files
+        uses: actions/upload-artifact@v3
+        if: steps.scraping.outputs.scraping_success == 'true'
+        with:
+          name: scraped-data
+          path: |
+            *.csv
+            *.json
+            *.xlsx
+          retention-days: 30
+      
+      - name: Generate summary report
+        if: always()
+        run: |
+          echo "# Scraping Job Summary" > job_summary.md
+          echo "" >> job_summary.md
+          echo "**Job Details:**" >> job_summary.md
+          echo "- Prompt: \`${{ github.event.inputs.prompt }}\`" >> job_summary.md
+          echo "- LLM Provider: ${{ github.event.inputs.llm_provider }}" >> job_summary.md
+          echo "- Scraping Profile: ${{ github.event.inputs.scraping_profile }}" >> job_summary.md
+          echo "- Export Format: ${{ github.event.inputs.export_format }}" >> job_summary.md
+          echo "- Max Pages: ${{ github.event.inputs.max_pages }}" >> job_summary.md
+          echo "" >> job_summary.md
+          echo "**Results:**" >> job_summary.md
+          
+          if [ "${{ steps.scraping.outputs.scraping_success }}" == "true" ]; then
+            echo "✅ **Status:** SUCCESS" >> job_summary.md
+            echo "" >> job_summary.md
+            echo "**Exported Files:**" >> job_summary.md
+            if ls *.csv 1> /dev/null 2>&1; then
+              echo "- CSV files: $(ls *.csv | wc -l)" >> job_summary.md
+            fi
+            if ls *.json 1> /dev/null 2>&1; then
+              echo "- JSON files: $(ls *.json | wc -l)" >> job_summary.md
+            fi
+            if ls *.xlsx 1> /dev/null 2>&1; then
+              echo "- Excel files: $(ls *.xlsx | wc -l)" >> job_summary.md
+            fi
+          else
+            echo "❌ **Status:** FAILED" >> job_summary.md
+            echo "" >> job_summary.md
+            echo "Check the logs for detailed error information." >> job_summary.md
+          fi
+          
+          echo "" >> job_summary.md
+          echo "**Execution Time:** $(date -u)" >> job_summary.md
+          echo "**Runner:** ${{ runner.os }} (GitHub Actions)" >> job_summary.md
+      
+      - name: Comment on commit (if triggered by push)
+        uses: actions/github-script@v6
+        if: github.event_name == 'push' && always()
+        with:
+          script: |
+            const fs = require('fs');
+            const summary = fs.readFileSync('job_summary.md', 'utf8');
+            
+            github.rest.repos.createCommitComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: context.sha,
+              body: summary
+            });
+      
+      - name: Clean up sensitive data
+        if: always()
+        run: |
+          # Remove any files that might contain sensitive information
+          rm -f .env
+          rm -f *.log
+          # Keep only the summary and exported data
+          find . -name "*.tmp" -delete
+          find . -name ".*cache*" -delete
+
+  health-check:
+    name: System Health Check
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event.inputs.prompt == 'health-check'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Run health check
+        run: |
+          python -c "
+          import asyncio
+          from iwsa.core.engine import ScrapingEngine
+          from iwsa.config import Settings
+          
+          async def health_check():
+              settings = Settings()
+              engine = ScrapingEngine(settings)
+              health = await engine.health_check()
+              
+              print('🏥 IWSA Health Check Results')
+              print('=' * 40)
+              print(f'Overall Health: {health[\"overall_health\"]}')
+              print()
+              
+              for component, status in health['components'].items():
+                  if isinstance(status, dict):
+                      comp_status = status.get('overall_health', status.get('status', 'unknown'))
+                  else:
+                      comp_status = status
+                  
+                  emoji = '✅' if comp_status == 'healthy' else '⚠️' if comp_status == 'degraded' else '❌'
+                  print(f'{emoji} {component}: {comp_status}')
+              
+              if 'issues' in health:
+                  print()
+                  print('Issues found:')
+                  for issue in health['issues']:
+                      print(f'  - {issue}')
+              
+              return health['overall_health'] == 'healthy'
+          
+          result = asyncio.run(health_check())
+          exit(0 if result else 1)
+          "
+
+# Optional: Schedule health checks
+# on:
+#   schedule:
+#     - cron: '0 8 * * *'  # Daily at 8 AM UTC

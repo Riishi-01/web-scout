@@ -1,0 +1,694 @@
+# Software Requirements Specification
+## Open-Source Local Scraping App
+
+**Version**: 1.0  
+**Project**: Local Web Scraping Desktop Application
+
+---
+
+## 1. System Overview
+
+### 1.1 Purpose
+Develop a user-friendly desktop application that enables non-technical users to scrape websites using natural language prompts, with offline-first fine-tuned AI, Google Sheets integration, and single-executable distribution.
+
+### 1.2 Core Objectives
+- Zero-setup scraping for non-technical users
+- Offline-first operation with embedded AI model
+- Simple natural language interface
+- Direct Google Sheets/Drive integration
+- Cross-platform single executable
+
+### 1.3 System Architecture
+```
+Electron UI ↔ Fine-tuned TinyLlama ↔ Playwright Engine ↔ Google APIs
+```
+
+---
+
+## 2. Phase 1: Core Infrastructure
+
+### 2.1 Electron Desktop Application (F001-F010)
+
+**F001: Cross-Platform UI Framework**
+- Electron-based desktop application
+- Windows, macOS, Linux compatibility
+- Responsive web-based interface
+- Native OS integration (system tray, notifications)
+
+**F002: Main Application Window**
+- 1200x800 minimum window size
+- Resizable with minimum constraints
+- Dark/light theme support
+- Tab-based navigation
+
+**F003: Settings Management**
+- Local configuration storage
+- Encrypted credential management
+- User preference persistence
+- Configuration import/export
+
+**F004: System Integration**
+- Auto-launch options
+- File association for scraping configs
+- Desktop notifications
+- System tray functionality
+
+**F005: Error Handling UI**
+- User-friendly error messages
+- Progress indicators
+- Cancellation capabilities
+- Detailed logs (developer mode)
+
+### 2.2 TinyLlama Model Integration (F006-F015)
+
+**F006: Model Packaging**
+- TinyLlama 1.1B embedded in application
+- ONNX Runtime for cross-platform inference
+- Model compression (quantization)
+- Total size <2GB RAM usage
+
+**F007: Local Inference Engine**
+- Fast CPU-based inference
+- GPU acceleration (optional)
+- Batch processing capabilities
+- Memory optimization
+
+**F008: Model Loading**
+- Lazy loading on first use
+- Progress indicators during initialization
+- Fallback mechanisms
+- Version compatibility checks
+
+**F009: Inference API**
+- Synchronous and asynchronous interfaces
+- Token streaming support
+- Temperature and top-p controls
+- Custom prompt templates
+
+**F010: Model Updates**
+- Incremental model updates
+- Backward compatibility
+- Update notifications
+- Rollback capabilities
+
+### 2.3 Google Services Integration (F011-F020)
+
+**F011: OAuth 2.0 Flow**
+- Native browser OAuth integration
+- Secure token storage
+- Automatic token refresh
+- Multi-account support
+
+**F012: Google Sheets API**
+- Spreadsheet creation and editing
+- Real-time data writing
+- Sheet formatting capabilities
+- Collaborative access management
+
+**F013: Google Drive API**
+- File upload and download
+- Folder organization
+- Permission management
+- Version history
+
+**F014: Authentication Management**
+- Credential validation
+- Permission scope handling
+- Account switching
+- Logout functionality
+
+**F015: API Rate Limiting**
+- Request throttling
+- Batch operations
+- Error recovery
+- Usage monitoring
+
+### 2.4 Playwright Browser Engine (F016-F025)
+
+**F016: Bundled Browser**
+- Chromium bundled with application
+- Headless operation mode
+- GPU acceleration disabled
+- Memory optimization flags
+
+**F017: Browser Management**
+- Instance pooling
+- Automatic cleanup
+- Resource monitoring
+- Crash recovery
+
+**F018: Page Interaction**
+- Element selection and interaction
+- Form filling capabilities
+- Screenshot functionality
+- Network monitoring
+
+**F019: Anti-Detection**
+- User agent rotation
+- Viewport randomization
+- Request timing variation
+- Cookie management
+
+**F020: Performance Optimization**
+- Resource blocking (images, ads)
+- JavaScript execution control
+- Memory leak prevention
+- CPU usage monitoring
+
+---
+
+## 3. Phase 2: Fine-Tuned Model Development
+
+### 3.1 Training Dataset Generation (F021-F030)
+
+**F021: Data Collection Framework**
+- Automated HTML structure analysis
+- Common website pattern identification
+- Selector generation algorithms
+- Quality validation metrics
+
+**F022: Synthetic Data Generation**
+- Template-based HTML creation
+- Variation algorithms
+- Edge case simulation
+- Balanced dataset creation
+
+**F023: Real Website Sampling**
+- Popular e-commerce sites
+- Job posting platforms
+- News and content sites
+- Social media platforms
+
+**F024: Annotation Pipeline**
+- Automated selector generation
+- Human validation workflow
+- Quality scoring system
+- Consistency checks
+
+**F025: Dataset Curation**
+- 10,000+ HTML→selector pairs
+- Diverse website representation
+- Difficulty level classification
+- Train/validation/test splits
+
+### 3.2 Model Fine-Tuning (F026-F035)
+
+**F026: Base Model Selection**
+- TinyLlama 1.1B parameter model
+- Instruction-following capabilities
+- Code generation strengths
+- Efficient inference characteristics
+
+**F027: Training Infrastructure**
+- GPU-accelerated training setup
+- Distributed training capabilities
+- Experiment tracking
+- Checkpoint management
+
+**F028: Fine-Tuning Process**
+- LoRA (Low-Rank Adaptation) technique
+- Task-specific prompt engineering
+- Gradient accumulation strategies
+- Learning rate scheduling
+
+**F029: Evaluation Metrics**
+- Selector accuracy measurement
+- Extraction success rates
+- Inference speed benchmarks
+- Memory usage profiling
+
+**F030: Model Optimization**
+- Quantization for deployment
+- ONNX conversion process
+- Inference engine optimization
+- Cross-platform compatibility
+
+### 3.3 Performance Optimization (F031-F040)
+
+**F031: Inference Speed**
+- Sub-second response times
+- Batch processing optimization
+- Cache mechanisms
+- Parallel processing
+
+**F032: Memory Management**
+- <2GB total application memory
+- Model weight optimization
+- Garbage collection tuning
+- Memory leak prevention
+
+**F033: Accuracy Validation**
+- Benchmark against cloud models
+- Success rate >85% target
+- Edge case handling
+- Continuous evaluation
+
+**F034: Model Compression**
+- Weight quantization (INT8/INT4)
+- Knowledge distillation
+- Pruning techniques
+- Size vs. accuracy trade-offs
+
+**F035: Deployment Optimization**
+- Fast application startup
+- Model loading optimization
+- Resource usage monitoring
+- Performance profiling
+
+---
+
+## 4. Phase 3: User Experience Design
+
+### 4.1 Setup Wizard (F036-F045)
+
+**F036: Welcome Screen**
+- Application introduction
+- Feature overview
+- System requirements check
+- Privacy policy acceptance
+
+**F037: Google Authentication**
+- Step-by-step OAuth guide
+- Permission explanation
+- Troubleshooting assistance
+- Alternative authentication methods
+
+**F038: Test Scraping Demo**
+- Pre-configured example websites
+- Live demonstration of capabilities
+- Interactive tutorial
+- Success validation
+
+**F039: Configuration Validation**
+- Connectivity tests
+- Permission verification
+- Performance benchmarks
+- Optimization recommendations
+
+**F040: Getting Started Guide**
+- Video tutorials
+- Documentation links
+- Community resources
+- Support channels
+
+### 4.2 Prompt Interface (F041-F050)
+
+**F041: Natural Language Input**
+- Large text input area
+- Syntax highlighting
+- Auto-completion suggestions
+- Example prompts library
+
+**F042: Intent Understanding**
+- Website URL extraction
+- Filter criteria parsing
+- Data field identification
+- Validation feedback
+
+**F043: Configuration Preview**
+- Parsed parameters display
+- Editable configuration
+- Validation warnings
+- Execution preview
+
+**F044: Template System**
+- Common scraping patterns
+- Customizable templates
+- Template sharing
+- Import/export functionality
+
+**F045: Prompt History**
+- Recent prompts storage
+- Favorite prompts
+- Search functionality
+- Execution history
+
+### 4.3 Live Preview System (F046-F055)
+
+**F046: Sample Data Generation**
+- 50-row preview extraction
+- Real-time data display
+- Column mapping visualization
+- Data quality indicators
+
+**F047: Interactive Preview**
+- Column selection/deselection
+- Data type detection
+- Format validation
+- Preview refresh
+
+**F048: Quality Assessment**
+- Completeness metrics
+- Data consistency checks
+- Error highlighting
+- Improvement suggestions
+
+**F049: Preview Customization**
+- Custom column names
+- Data transformation rules
+- Filtering options
+- Sort capabilities
+
+**F050: Export Preview**
+- Google Sheets preview
+- Format options
+- Destination selection
+- Schedule configuration
+
+### 4.4 One-Click Export (F051-F060)
+
+**F051: Destination Selection**
+- Google Sheets creation
+- Existing sheet selection
+- Folder organization
+- Sharing settings
+
+**F052: Export Configuration**
+- Data formatting options
+- Column mapping
+- Update strategies
+- Batch size settings
+
+**F053: Progress Monitoring**
+- Real-time progress bars
+- ETA calculations
+- Pause/resume functionality
+- Error reporting
+
+**F054: Completion Notification**
+- Success confirmation
+- Results summary
+- Direct link to output
+- Sharing options
+
+**F055: Export History**
+- Previous exports tracking
+- Re-run capabilities
+- Performance metrics
+- Cleanup utilities
+
+---
+
+## 5. Phase 4: Distribution & Deployment
+
+### 5.1 Single Executable Packaging (F056-F065)
+
+**F056: Cross-Platform Building**
+- Windows (x64) executable
+- macOS (Intel/Apple Silicon) bundles
+- Linux (x64) AppImage
+- Automated build pipeline
+
+**F057: Dependency Bundling**
+- Electron runtime inclusion
+- Node.js runtime packaging
+- Python runtime embedding
+- Native library bundling
+
+**F058: Asset Optimization**
+- Model weight compression
+- Resource minification
+- Dead code elimination
+- Binary optimization
+
+**F059: Installer Creation**
+- Windows NSIS installer
+- macOS PKG/DMG packages
+- Linux package formats
+- Installation validation
+
+**F060: Code Signing**
+- Windows Authenticode signing
+- macOS notarization
+- Linux package signing
+- Certificate management
+
+### 5.2 Auto-Update System (F061-F070)
+
+**F061: Update Detection**
+- Version checking mechanism
+- Update availability notification
+- Release notes display
+- Update scheduling
+
+**F062: Incremental Updates**
+- Delta patching system
+- Model-only updates
+- Critical security patches
+- Rollback capabilities
+
+**F063: Update Distribution**
+- CDN-based delivery
+- P2P update sharing
+- Mirror redundancy
+- Bandwidth optimization
+
+**F064: Update Installation**
+- Background downloading
+- Silent installation option
+- User confirmation prompts
+- Recovery mechanisms
+
+**F065: Version Management**
+- Semantic versioning
+- Compatibility checking
+- Migration scripts
+- Deprecation notices
+
+### 5.3 Documentation & Support (F066-F075)
+
+**F066: User Documentation**
+- Quick start guide
+- Feature documentation
+- Troubleshooting guide
+- FAQ compilation
+
+**F067: Video Tutorials**
+- Installation walkthrough
+- Basic usage examples
+- Advanced features
+- Tips and tricks
+
+**F068: Community Resources**
+- GitHub repository
+- Issue tracking
+- Discussion forums
+- Contribution guidelines
+
+**F069: Technical Documentation**
+- API reference
+- Architecture overview
+- Development setup
+- Extension guides
+
+**F070: Support Channels**
+- GitHub Issues
+- Community forums
+- Email support
+- Live chat (optional)
+
+### 5.4 Release Management (F071-F080)
+
+**F071: Release Pipeline**
+- Automated testing
+- Build verification
+- Security scanning
+- Performance validation
+
+**F072: Distribution Channels**
+- GitHub Releases
+- Official website
+- Package managers (optional)
+- App stores (future)
+
+**F073: Release Notes**
+- Feature announcements
+- Bug fix summaries
+- Breaking changes
+- Migration guides
+
+**F074: Metrics Collection**
+- Anonymous usage statistics
+- Performance telemetry
+- Error reporting
+- Feature usage tracking
+
+**F075: Feedback System**
+- In-app feedback forms
+- Rating prompts
+- Survey integration
+- User research coordination
+
+---
+
+## 6. Technical Specifications
+
+### 6.1 System Requirements
+
+**Minimum Requirements:**
+- RAM: 4GB (2GB for model, 2GB for system)
+- Storage: 1GB available space
+- CPU: Dual-core 2.0GHz
+- Network: Internet for initial setup
+
+**Recommended Requirements:**
+- RAM: 8GB+
+- Storage: 2GB+ available space
+- CPU: Quad-core 2.5GHz+
+- GPU: Optional for acceleration
+
+### 6.2 Technology Stack
+
+```yaml
+Frontend:
+  framework: "Electron 28+"
+  ui_library: "React 18"
+  styling: "Tailwind CSS"
+  icons: "Lucide React"
+
+Backend:
+  runtime: "Node.js 18+"
+  ai_engine: "ONNX Runtime"
+  browser: "Playwright (Chromium)"
+  python: "Python 3.9+ (embedded)"
+
+Model:
+  base_model: "TinyLlama 1.1B"
+  optimization: "ONNX INT8 quantization"
+  size: "<500MB"
+  inference: "CPU-optimized"
+
+APIs:
+  google_oauth: "OAuth 2.0"
+  google_sheets: "Sheets API v4"
+  google_drive: "Drive API v3"
+```
+
+### 6.3 Security Considerations
+
+**Data Protection:**
+- Local credential encryption
+- Secure token storage
+- No data transmission to external servers
+- Privacy-first design
+
+**Code Security:**
+- Code signing for all releases
+- Dependency vulnerability scanning
+- Secure update mechanism
+- Sandboxed execution
+
+### 6.4 Performance Targets
+
+| Metric | Target | Measurement |
+|--------|--------|-------------|
+| Application Startup | <5 seconds | Cold start to UI ready |
+| Model Loading | <10 seconds | First inference ready |
+| Inference Speed | <2 seconds | Prompt to response |
+| Memory Usage | <2GB | Peak application memory |
+| Export Speed | 100+ rows/min | Google Sheets writing |
+| Package Size | <500MB | Download size |
+
+---
+
+## 7. Quality Assurance
+
+### 7.1 Testing Strategy
+
+**Unit Testing:**
+- Component isolation testing
+- Model inference validation
+- API integration testing
+- Error handling verification
+
+**Integration Testing:**
+- End-to-end workflow testing
+- Cross-platform compatibility
+- Performance benchmarking
+- Security vulnerability assessment
+
+**User Acceptance Testing:**
+- Non-technical user validation
+- Usability testing sessions
+- Accessibility compliance
+- Documentation validation
+
+### 7.2 Quality Metrics
+
+**Functional Quality:**
+- Feature completeness: 100%
+- Bug density: <1 per 1000 LOC
+- Test coverage: >90%
+- Performance targets met: 100%
+
+**User Experience Quality:**
+- Setup completion rate: >95%
+- Task success rate: >90%
+- User satisfaction: >4.5/5
+- Support ticket volume: <5% of users
+
+---
+
+## 8. Risk Management
+
+### 8.1 Technical Risks
+
+| Risk | Impact | Mitigation |
+|------|--------|------------|
+| Model accuracy insufficient | High | Extensive validation, fallback options |
+| Memory usage too high | High | Optimization, compression techniques |
+| Cross-platform compatibility | Medium | Comprehensive testing matrix |
+| Update system failures | Medium | Robust rollback mechanisms |
+
+### 8.2 User Experience Risks
+
+| Risk | Impact | Mitigation |
+|------|--------|------------|
+| Complex setup process | High | Streamlined wizard, automation |
+| Poor documentation | Medium | User testing, iterative improvement |
+| Performance issues | High | Optimization, system requirements |
+| Authentication problems | Medium | Clear error messages, support |
+
+---
+
+## 9. Success Criteria
+
+### 9.1 Primary Success Metrics
+- **Download adoption**: 1000+ downloads within first month
+- **User retention**: 70%+ users complete setup successfully
+- **Task completion**: 85%+ scraping tasks succeed
+- **Performance**: All targets met consistently
+
+### 9.2 Secondary Success Metrics
+- **Community engagement**: Active GitHub contributions
+- **User satisfaction**: Positive reviews and feedback
+- **Platform coverage**: All major OS versions supported
+- **Update adoption**: 80%+ users on latest version
+
+---
+
+## 10. Open Source Considerations
+
+### 10.1 Licensing
+- MIT License for maximum compatibility
+- Clear contribution guidelines
+- Intellectual property policies
+- Third-party license compliance
+
+### 10.2 Community Building
+- GitHub repository with comprehensive README
+- Contributing guidelines and code of conduct
+- Issue templates and PR workflows
+- Regular release cycles and communication
+
+### 10.3 Sustainability
+- Clear project roadmap
+- Maintainer responsibilities
+- Funding considerations
+- Long-term support strategy
+
+---
+
+**Document Status**: Final Draft  
+**Target Users**: Non-technical users seeking simple web scraping solutions  
+**Distribution**: Open source with pre-built binaries

@@ -1,0 +1,805 @@
+# Software Requirements Specification
+## Intelligent Web Scraping Agent (IWSA)
+
+**Version**: 1.0  
+**Date**: December 2024  
+**Status**: Draft
+
+---
+
+## 1. System Overview
+
+### 1.1 Purpose
+Build an AI-powered web scraping agent that analyzes user prompts, performs website reconnaissance, uses LLM intelligence to generate optimal scraping strategies, and exports structured data to Google Sheets.
+
+### 1.2 Scope
+- Natural language prompt processing
+- Automated website structure analysis
+- LLM-powered scraping strategy generation
+- Dynamic selector creation and validation
+- Anti-detection mechanisms
+- Data extraction and storage
+- Free-tier infrastructure optimization
+
+### 1.3 System Context
+```
+User Prompt → Reconnaissance Engine → LLM Analysis → Dynamic Scraper → Data Export
+```
+
+---
+
+## 2. System Architecture
+
+### 2.1 Core Components
+
+#### **2.1.1 Prompt Processing Layer**
+- **Input**: Natural language scraping requests
+- **Processing**: Intent extraction, parameter identification
+- **Output**: Structured scraping configuration
+
+#### **2.1.2 Reconnaissance Engine**
+- **Function**: Website structure discovery
+- **Capabilities**: DOM mapping, filter detection, pagination analysis
+- **Output**: Site metadata and structure data
+
+#### **2.1.3 LLM Intelligence Hub**
+- **Primary**: OpenAI GPT-4/Claude API with user-provided keys
+- **Fallback**: Hugging Face Transformers (free tier)
+- **Function**: Strategy generation, selector optimization
+
+#### **2.1.4 Dynamic Scraper Core**
+- **Browser**: Playwright headless (optimized for free tier)
+- **Anti-detection**: IP rotation, fingerprint randomization
+- **Adaptation**: Real-time selector adjustment
+
+#### **2.1.5 Data Pipeline**
+- **Processing**: Validation, deduplication, formatting
+- **Storage**: MongoDB Atlas (free tier)
+- **Export**: Google Sheets API integration
+
+### 2.2 Infrastructure Architecture
+
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   GitHub Actions│────│  LLM API Gateway │────│  MongoDB Atlas  │
+│   (Orchestration)│    │  (Intelligence)  │    │   (Storage)     │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+         │                        │                        │
+         ▼                        ▼                        ▼
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│  Playwright     │    │   Proxy Pool     │    │ Google Sheets   │
+│  (Scraping)     │    │ (Anti-detection) │    │   (Export)      │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+```
+
+---
+
+## 3. Functional Requirements
+
+### 3.1 Prompt Processing (F001-F005)
+
+**F001: Natural Language Understanding**
+- Parse user prompts containing website, filters, and data requirements
+- Extract target URLs, filter criteria, data fields
+- Handle ambiguous requests with clarification prompts
+
+**F002: Intent Classification**
+- Identify scraping type (job listings, products, contacts, etc.)
+- Determine required anti-detection level
+- Classify urgency and volume requirements
+
+**F003: Parameter Validation**
+- Validate URL accessibility and robots.txt status
+- Check legal compliance indicators
+- Estimate resource requirements
+
+**F004: Configuration Generation**
+- Convert natural language to structured parameters
+- Generate initial scraping strategy
+- Set rate limiting and retry policies
+
+**F005: User Confirmation**
+- Display interpreted requirements
+- Allow parameter adjustment
+- Confirm execution approval
+
+### 3.2 Reconnaissance Engine (F006-F012)
+
+**F006: Site Structure Discovery**
+- Crawl navigation elements, forms, filters
+- Map pagination mechanisms
+- Identify data containers and layouts
+
+**F007: Filter System Analysis**
+- Detect sidebar filters, dropdown menus
+- Analyze search functionality
+- Map filter interactions and dependencies
+
+**F008: Content Pattern Recognition**
+- Identify repeating data structures
+- Analyze card layouts, list formats
+- Detect dynamic loading mechanisms
+
+**F009: Authentication Requirements**
+- Check for login requirements
+- Identify public vs. authenticated content
+- Analyze session management needs
+
+**F010: Performance Characteristics**
+- Measure page load times
+- Identify resource-heavy elements
+- Analyze JavaScript execution requirements
+
+**F011: Anti-Bot Measures Detection**
+- Identify CAPTCHA systems
+- Detect rate limiting implementations
+- Analyze fingerprinting mechanisms
+
+**F012: Mobile Responsiveness Check**
+- Test mobile viewport compatibility
+- Identify mobile-specific elements
+- Analyze responsive behavior
+
+### 3.3 LLM Intelligence Processing (F013-F020)
+
+**F013: HTML Structure Analysis**
+- **Input Channel**: Raw HTML, CSS selectors, site metadata
+- **Processing**: Semantic understanding of page structure
+- **Output Channel**: Selector recommendations, extraction logic
+
+**F014: Filter Strategy Generation**
+- **Input Channel**: Detected filters, user requirements
+- **Processing**: Optimal filter application sequence
+- **Output Channel**: Step-by-step filtering instructions
+
+**F015: Data Extraction Logic**
+- **Input Channel**: Content patterns, target data fields
+- **Processing**: Extraction rule generation
+- **Output Channel**: CSS/XPath selectors, validation rules
+
+**F016: Pagination Strategy**
+- **Input Channel**: Pagination mechanisms, volume estimates
+- **Processing**: Optimal traversal strategy
+- **Output Channel**: Navigation instructions, stopping criteria
+
+**F017: Error Handling Logic**
+- **Input Channel**: Potential failure points, site behavior
+- **Processing**: Resilience strategy generation
+- **Output Channel**: Retry logic, fallback selectors
+
+**F018: Performance Optimization**
+- **Input Channel**: Site performance data, resource constraints
+- **Processing**: Optimization recommendations
+- **Output Channel**: Resource management strategy
+
+**F019: Anti-Detection Strategy**
+- **Input Channel**: Detected anti-bot measures, traffic patterns
+- **Processing**: Evasion strategy generation
+- **Output Channel**: Timing, headers, behavior patterns
+
+**F020: Quality Assurance**
+- **Input Channel**: Extraction results, expected patterns
+- **Processing**: Data quality validation
+- **Output Channel**: Quality scores, improvement suggestions
+
+### 3.4 Dynamic Scraping Engine (F021-F030)
+
+**F021: Browser Instance Management**
+- Launch optimized Playwright instances
+- Implement memory and CPU constraints
+- Handle instance rotation and cleanup
+
+**F022: Session Management**
+- Maintain session state across requests
+- Handle cookie and localStorage management
+- Implement session rotation strategies
+
+**F023: Filter Application**
+- Execute LLM-generated filter sequences
+- Validate filter application success
+- Handle dynamic filter interactions
+
+**F024: Data Extraction**
+- Apply generated selectors
+- Execute extraction logic
+- Validate extracted data quality
+
+**F025: Pagination Handling**
+- Navigate through multiple pages
+- Detect end conditions
+- Handle infinite scroll mechanisms
+
+**F026: Error Recovery**
+- Implement retry mechanisms
+- Handle anti-bot responses
+- Adapt to layout changes
+
+**F027: Rate Limiting**
+- Enforce intelligent request timing
+- Monitor response patterns
+- Adjust speed based on site behavior
+
+**F028: Proxy Management**
+- Rotate IP addresses
+- Handle proxy failures
+- Maintain geographic consistency
+
+**F029: Data Validation**
+- Validate extracted data completeness
+- Check data format consistency
+- Flag anomalies and errors
+
+**F030: Progress Monitoring**
+- Track scraping progress
+- Estimate completion time
+- Report status updates
+
+### 3.5 Data Processing & Export (F031-F035)
+
+**F031: Data Cleaning**
+- Normalize extracted data formats
+- Remove duplicates and invalid entries
+- Standardize field formats
+
+**F032: Data Enrichment**
+- Add metadata (timestamps, sources)
+- Calculate derived fields
+- Enhance data quality scores
+
+**F033: Storage Management**
+- Store raw and processed data
+- Implement data retention policies
+- Handle storage optimization
+
+**F034: Export Generation**
+- Format data for Google Sheets
+- Handle large dataset chunking
+- Implement export scheduling
+
+**F035: Quality Reporting**
+- Generate extraction statistics
+- Provide data quality metrics
+- Create performance reports
+
+---
+
+## 4. LLM Integration Specifications
+
+### 4.1 API Gateway Configuration
+
+```yaml
+LLM_CONFIG:
+  primary_provider: "openai"  # User-provided API key
+  fallback_provider: "huggingface"  # Free tier fallback
+  timeout: 30s
+  retry_attempts: 3
+  rate_limiting: true
+```
+
+### 4.2 Input/Output Channel Specifications
+
+#### **4.2.1 HTML Analysis Channel**
+```json
+{
+  "channel_id": "html_analysis",
+  "input_format": {
+    "html_content": "string (max 50KB)",
+    "url": "string",
+    "user_intent": "string",
+    "site_metadata": "object"
+  },
+  "output_format": {
+    "selectors": ["css_selector_array"],
+    "extraction_logic": "string",
+    "confidence_score": "float(0-1)",
+    "alternative_strategies": ["array"]
+  },
+  "processing_time": "5-15 seconds",
+  "token_usage": "1000-3000 tokens"
+}
+```
+
+#### **4.2.2 Strategy Generation Channel**
+```json
+{
+  "channel_id": "strategy_generation",
+  "input_format": {
+    "site_structure": "object",
+    "user_requirements": "object",
+    "detected_filters": "array",
+    "performance_constraints": "object"
+  },
+  "output_format": {
+    "scraping_plan": "object",
+    "filter_sequence": "array",
+    "timing_strategy": "object",
+    "risk_assessment": "object"
+  },
+  "processing_time": "10-30 seconds",
+  "token_usage": "2000-5000 tokens"
+}
+```
+
+#### **4.2.3 Error Resolution Channel**
+```json
+{
+  "channel_id": "error_resolution",
+  "input_format": {
+    "error_context": "string",
+    "failed_selectors": "array",
+    "page_state": "object",
+    "previous_attempts": "array"
+  },
+  "output_format": {
+    "resolution_strategy": "string",
+    "updated_selectors": "array",
+    "retry_logic": "object",
+    "success_probability": "float(0-1)"
+  },
+  "processing_time": "3-10 seconds",
+  "token_usage": "500-2000 tokens"
+}
+```
+
+#### **4.2.4 Quality Assessment Channel**
+```json
+{
+  "channel_id": "quality_assessment",
+  "input_format": {
+    "extracted_data": "array",
+    "expected_patterns": "object",
+    "extraction_metadata": "object"
+  },
+  "output_format": {
+    "quality_score": "float(0-1)",
+    "data_issues": "array",
+    "improvement_suggestions": "array",
+    "confidence_level": "string"
+  },
+  "processing_time": "2-8 seconds",
+  "token_usage": "300-1500 tokens"
+}
+```
+
+### 4.3 LLM Provider Management
+
+#### **4.3.1 Primary Provider (OpenAI/Claude)**
+- Requires user-provided API key
+- Advanced reasoning capabilities
+- Higher token costs but better accuracy
+- Handles complex HTML analysis
+
+#### **4.3.2 Fallback Provider (Hugging Face)**
+- Free tier with rate limits
+- Basic HTML understanding
+- Suitable for simple extraction tasks
+- Automatic failover when primary unavailable
+
+#### **4.3.3 Local Model Option**
+- Ollama integration for privacy-sensitive tasks
+- Resource-intensive but no API costs
+- Limited reasoning compared to cloud models
+- Configurable model selection
+
+---
+
+## 5. Non-Functional Requirements
+
+### 5.1 Performance Requirements
+
+**P001: Response Time**
+- Prompt processing: <5 seconds
+- Site reconnaissance: <30 seconds
+- LLM analysis: <60 seconds per page type
+- Data extraction: 10-100 pages/minute
+
+**P002: Throughput**
+- Support 1000+ pages per session
+- Handle 5-10 concurrent scraping targets
+- Process 50-200 pages per GitHub Actions run
+
+**P003: Resource Efficiency**
+- Memory usage: <512MB per browser instance
+- CPU optimization for free tier constraints
+- Storage optimization for MongoDB Atlas limits
+
+### 5.2 Reliability Requirements
+
+**R001: Availability**
+- System uptime: 99%+ (accounting for free tier limitations)
+- Graceful degradation when services unavailable
+- Automatic recovery from transient failures
+
+**R002: Data Integrity**
+- 99%+ data extraction accuracy
+- Comprehensive validation and error detection
+- Audit trail for all operations
+
+**R003: Error Handling**
+- Robust retry mechanisms with exponential backoff
+- Intelligent failure classification
+- Automated error reporting and resolution
+
+### 5.3 Scalability Requirements
+
+**S001: Horizontal Scaling**
+- Support multiple GitHub Actions workflows
+- Distribute load across free tier accounts
+- Platform-agnostic architecture for easy migration
+
+**S002: Data Volume**
+- Handle datasets up to 100K records
+- Efficient pagination for large sites
+- Optimized storage for MongoDB Atlas limits
+
+### 5.4 Security Requirements
+
+**SE001: API Key Management**
+- Secure storage of user-provided API keys
+- Encrypted transmission of sensitive data
+- No logging of authentication credentials
+
+**SE002: Anti-Detection**
+- IP rotation and proxy management
+- Browser fingerprint randomization
+- Respectful rate limiting to avoid blocks
+
+**SE003: Data Privacy**
+- Compliance with public data scraping laws
+- No storage of personal identifiable information
+- Clear data retention and deletion policies
+
+---
+
+## 6. Technical Specifications
+
+### 6.1 Technology Stack
+
+```yaml
+Infrastructure:
+  orchestration: "GitHub Actions"
+  compute: "Docker containers"
+  storage: "MongoDB Atlas (M0 free tier)"
+  export: "Google Sheets API"
+
+Scraping Engine:
+  browser: "Playwright (headless Chrome)"
+  language: "Python 3.9+"
+  frameworks: ["asyncio", "aiohttp", "beautifulsoup4"]
+
+LLM Integration:
+  primary: "OpenAI GPT-4 / Claude API"
+  fallback: "Hugging Face Transformers"
+  local: "Ollama (optional)"
+
+Data Processing:
+  validation: "Pydantic"
+  storage: "PyMongo"
+  export: "gspread"
+
+Monitoring:
+  uptime: "UptimeRobot"
+  logging: "Python logging"
+  metrics: "Custom dashboard"
+```
+
+### 6.2 API Integrations
+
+#### **6.2.1 LLM APIs**
+```python
+# OpenAI Integration
+OPENAI_CONFIG = {
+    "api_key": "user_provided",
+    "model": "gpt-4",
+    "max_tokens": 4000,
+    "temperature": 0.1
+}
+
+# Claude Integration  
+CLAUDE_CONFIG = {
+    "api_key": "user_provided",
+    "model": "claude-3-sonnet",
+    "max_tokens": 4000
+}
+
+# Hugging Face Fallback
+HF_CONFIG = {
+    "model": "microsoft/DialoGPT-large",
+    "api_key": "free_tier"
+}
+```
+
+#### **6.2.2 Storage APIs**
+```python
+# MongoDB Atlas
+MONGO_CONFIG = {
+    "connection_string": "mongodb+srv://...",
+    "database": "scraping_data",
+    "collection": "extracted_data"
+}
+
+# Google Sheets
+SHEETS_CONFIG = {
+    "credentials": "service_account.json",
+    "scope": ["spreadsheets", "drive"]
+}
+```
+
+### 6.3 Configuration Management
+
+#### **6.3.1 Environment Variables**
+```env
+# LLM Configuration
+OPENAI_API_KEY=user_provided
+CLAUDE_API_KEY=user_provided
+HF_API_KEY=optional
+
+# Storage Configuration
+MONGODB_URI=mongodb+srv://...
+GOOGLE_CREDENTIALS=base64_encoded_json
+
+# Scraping Configuration
+PROXY_POOL_URL=optional
+MAX_CONCURRENT_BROWSERS=3
+DEFAULT_TIMEOUT=30
+
+# Performance Tuning
+MEMORY_LIMIT=512MB
+CPU_LIMIT=2_cores
+RATE_LIMIT_DELAY=2
+```
+
+#### **6.3.2 Dynamic Configuration**
+```yaml
+scraping_profiles:
+  conservative:
+    rate_limit: 5s
+    retry_attempts: 5
+    anti_detection: high
+    
+  balanced:
+    rate_limit: 2s
+    retry_attempts: 3
+    anti_detection: medium
+    
+  aggressive:
+    rate_limit: 1s
+    retry_attempts: 2
+    anti_detection: low
+```
+
+---
+
+## 7. System Integration
+
+### 7.1 Workflow Integration
+
+```mermaid
+graph TD
+    A[User Prompt] --> B[Prompt Parser]
+    B --> C[Reconnaissance Engine]
+    C --> D[LLM Analysis Hub]
+    D --> E[Dynamic Scraper]
+    E --> F[Data Pipeline]
+    F --> G[Google Sheets Export]
+    
+    D --> H[Strategy Cache]
+    E --> I[Error Handler]
+    I --> D
+    F --> J[Quality Validator]
+    J --> K[MongoDB Storage]
+```
+
+### 7.2 Data Flow Specifications
+
+#### **7.2.1 Input Data Flow**
+```
+User Prompt → JSON → Validation → Intent Extraction → Configuration
+```
+
+#### **7.2.2 Processing Data Flow**
+```
+Site Data → LLM → Strategy → Execution → Validation → Storage
+```
+
+#### **7.2.3 Output Data Flow**
+```
+Raw Data → Cleaning → Formatting → Export → Quality Report
+```
+
+### 7.3 Error Handling Integration
+
+```python
+class ErrorHandler:
+    def __init__(self):
+        self.retry_strategies = {
+            'rate_limit': ExponentialBackoff(),
+            'selector_failure': LLMRegeneration(),
+            'network_error': ProxyRotation(),
+            'memory_error': BrowserRestart()
+        }
+    
+    async def handle_error(self, error_type, context):
+        strategy = self.retry_strategies.get(error_type)
+        return await strategy.execute(context)
+```
+
+---
+
+## 8. Quality Assurance
+
+### 8.1 Testing Requirements
+
+**T001: Unit Testing**
+- 90%+ code coverage
+- Mock external API dependencies
+- Test all LLM input/output channels
+
+**T002: Integration Testing**
+- End-to-end workflow validation
+- API integration testing
+- Performance benchmarking
+
+**T003: Load Testing**
+- Free tier resource limit validation
+- Concurrent operation testing
+- Memory leak detection
+
+### 8.2 Monitoring & Metrics
+
+```python
+MONITORING_METRICS = {
+    'performance': [
+        'pages_per_minute',
+        'extraction_accuracy',
+        'memory_usage',
+        'api_response_time'
+    ],
+    'reliability': [
+        'error_rate',
+        'retry_success_rate',
+        'uptime_percentage'
+    ],
+    'business': [
+        'successful_extractions',
+        'user_satisfaction',
+        'cost_per_extraction'
+    ]
+}
+```
+
+---
+
+## 9. Deployment & Operations
+
+### 9.1 Deployment Architecture
+
+#### **9.1.1 GitHub Actions Workflow**
+```yaml
+name: Intelligent Scraper
+on:
+  workflow_dispatch:
+    inputs:
+      prompt:
+        description: 'Scraping prompt'
+        required: true
+      api_key:
+        description: 'LLM API key'
+        required: true
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run scraper
+        env:
+          LLM_API_KEY: ${{ github.event.inputs.api_key }}
+          PROMPT: ${{ github.event.inputs.prompt }}
+        run: python main.py
+```
+
+### 9.2 Configuration Management
+
+#### **9.2.1 Secrets Management**
+- GitHub Secrets for API keys
+- Environment-specific configurations
+- Encrypted credential storage
+
+#### **9.2.2 Version Control**
+- Git-based configuration management
+- Automated deployment pipelines
+- Rollback capabilities
+
+### 9.3 Operational Procedures
+
+#### **9.3.1 Monitoring Setup**
+- UptimeRobot for service monitoring
+- Custom dashboards for metrics
+- Automated alerting for failures
+
+#### **9.3.2 Maintenance Procedures**
+- Regular dependency updates
+- Performance optimization reviews
+- Capacity planning assessments
+
+---
+
+## 10. Risk Management
+
+### 10.1 Technical Risks
+
+| Risk | Impact | Probability | Mitigation |
+|------|--------|-------------|------------|
+| Free tier limits exceeded | High | Medium | Multi-platform distribution |
+| LLM API failures | Medium | Low | Fallback providers |
+| Anti-bot detection | High | Medium | Advanced evasion techniques |
+| Memory constraints | Medium | High | Aggressive optimization |
+
+### 10.2 Legal & Compliance Risks
+
+| Risk | Impact | Probability | Mitigation |
+|------|--------|-------------|------------|
+| ToS violations | High | Medium | Legal compliance checks |
+| Rate limiting | Medium | High | Respectful scraping practices |
+| Data privacy issues | High | Low | Public data focus only |
+
+### 10.3 Operational Risks
+
+| Risk | Impact | Probability | Mitigation |
+|------|--------|-------------|------------|
+| Service outages | Medium | Medium | Redundancy and failover |
+| Data quality issues | High | Low | Comprehensive validation |
+| User experience problems | Medium | Low | Thorough testing |
+
+---
+
+## 11. Success Metrics
+
+### 11.1 Technical KPIs
+- **Extraction Accuracy**: >95%
+- **Processing Speed**: 50+ pages/minute
+- **System Uptime**: >99%
+- **Resource Efficiency**: <512MB memory usage
+
+### 11.2 Business KPIs
+- **User Satisfaction**: >4.5/5 rating
+- **Cost Efficiency**: <$0.01 per extracted record
+- **Scaling Success**: Handle 10x volume increase
+- **Time to Value**: <5 minutes setup time
+
+### 11.3 Operational KPIs
+- **Error Rate**: <1%
+- **Recovery Time**: <30 seconds
+- **Maintenance Overhead**: <2 hours/week
+- **Support Requests**: <5% of total usage
+
+---
+
+## 12. Future Enhancements
+
+### 12.1 Phase 2 Features
+- Multi-language support
+- Advanced ML-based prediction
+- Real-time data streaming
+- Enhanced visualization
+
+### 12.2 Scaling Considerations
+- Enterprise deployment options
+- Advanced caching mechanisms
+- Distributed processing
+- Custom model training
+
+---
+
+**Document Control**
+- **Author**: Development Team
+- **Reviewers**: Technical Lead, Product Manager
+- **Approval**: System Architect
+- **Next Review**: Q1 2025

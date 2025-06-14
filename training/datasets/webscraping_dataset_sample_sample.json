@@ -1,0 +1,333 @@
+[
+  {
+    "instruction": "Analyze this HTML structure and provide CSS selectors for data extraction",
+    "input": "<article class=\"listing\" data-job-id=\"6947\">\n                <header class=\"listing-header\">\n                    <h3 class=\"position\">Games developer</h3>\n                    <div class=\"employer\">Ward, Young and Contreras</div>\n                </header>\n                <div class=\"details\">\n                    <div class=\"location-info\">Parkerfurt, Utah</div>\n                    <div class=\"compensation\">$42k - $88k</div>\n                    <div class=\"summary\">Real police wait happen determine. Long lawyer writer health. Tree serious soon stay seven quite other.\nLand region back nor article natural measure. Mr clearly take kind quite response major.</div>\n                </div>\n            </article>",
+    "output": {
+      "selectors": {
+        "title": [
+          ".job-title",
+          ".position"
+        ],
+        "company": [
+          ".company-name",
+          ".employer"
+        ],
+        "location": [
+          ".location",
+          ".location-info"
+        ],
+        "salary": [
+          ".salary",
+          ".compensation"
+        ],
+        "description": [
+          ".job-description p",
+          ".summary"
+        ]
+      },
+      "extraction_strategy": "Extract job posting details from listing page",
+      "data_fields": [
+        "title",
+        "company",
+        "location",
+        "salary",
+        "description"
+      ],
+      "confidence": 0.92
+    },
+    "task_type": "css_selector_generation",
+    "domain": "jobs"
+  },
+  {
+    "instruction": "Analyze this HTML and determine the pagination strategy",
+    "input": "<div class=\"pagination\">\n            <a href=\"?page=1\" class=\"page-link\">1</a>\n            <a href=\"?page=2\" class=\"page-link current\">2</a>\n            <a href=\"?page=3\" class=\"page-link\">3</a>\n            <a href=\"?page=4\" class=\"page-link\">Next</a>\n        </div>",
+    "output": {
+      "pagination_type": "numbered",
+      "selectors": {
+        "next_button": [
+          ".page-link:contains('Next')",
+          "a[href*='page=']:last"
+        ],
+        "page_links": [
+          ".page-link",
+          ".pagination a"
+        ],
+        "current_page": [
+          ".current",
+          ".active"
+        ]
+      },
+      "strategy": "Click numbered pagination links to navigate",
+      "confidence": 0.98
+    },
+    "task_type": "pagination_detection",
+    "domain": "general"
+  },
+  {
+    "instruction": "Analyze this HTML structure and provide CSS selectors for data extraction",
+    "input": "<article class=\"listing\" data-job-id=\"8428\">\n                <header class=\"listing-header\">\n                    <h3 class=\"position\">Best boy</h3>\n                    <div class=\"employer\">Sparks PLC</div>\n                </header>\n                <div class=\"details\">\n                    <div class=\"location-info\">Scottmouth, Vermont</div>\n                    <div class=\"compensation\">$88k - $131k</div>\n                    <div class=\"summary\">Wall matter management ball always it. Page ago director purpose team onto.\nOffice several compare million kind.\nYoung job sport why. Girl four prove tax form really explain.\nAlready because education break significant ten stay. Price my including. Million performance material kind appear.</div>\n                </div>\n            </article>",
+    "output": {
+      "selectors": {
+        "title": [
+          ".job-title",
+          ".position"
+        ],
+        "company": [
+          ".company-name",
+          ".employer"
+        ],
+        "location": [
+          ".location",
+          ".location-info"
+        ],
+        "salary": [
+          ".salary",
+          ".compensation"
+        ],
+        "description": [
+          ".job-description p",
+          ".summary"
+        ]
+      },
+      "extraction_strategy": "Extract job posting details from listing page",
+      "data_fields": [
+        "title",
+        "company",
+        "location",
+        "salary",
+        "description"
+      ],
+      "confidence": 0.92
+    },
+    "task_type": "css_selector_generation",
+    "domain": "jobs"
+  },
+  {
+    "instruction": "Analyze this HTML structure and provide CSS selectors for data extraction",
+    "input": "<div class=\"job-posting\">\n                <div class=\"job-header\">\n                    <h1 class=\"job-title\">Architectural technologist</h1>\n                    <h2 class=\"company-name\">Stout-Armstrong</h2>\n                    <div class=\"job-meta\">\n                        <span class=\"location\">West Cassidy, North Carolina</span>\n                        <span class=\"salary\">$103k - $83k</span>\n                    </div>\n                </div>\n                <div class=\"job-description\">\n                    <p>Late specific study word. Mean common easy just.\nMission city health executive impact full our. Positive at behind question exist rich prevent trade. Four old center glass.\nOrganization visit finally heavy. Spend prove stock school rate money. Meet adult final week game she.</p>\n                </div>\n            </div>",
+    "output": {
+      "selectors": {
+        "title": [
+          ".job-title",
+          ".position"
+        ],
+        "company": [
+          ".company-name",
+          ".employer"
+        ],
+        "location": [
+          ".location",
+          ".location-info"
+        ],
+        "salary": [
+          ".salary",
+          ".compensation"
+        ],
+        "description": [
+          ".job-description p",
+          ".summary"
+        ]
+      },
+      "extraction_strategy": "Extract job posting details from listing page",
+      "data_fields": [
+        "title",
+        "company",
+        "location",
+        "salary",
+        "description"
+      ],
+      "confidence": 0.92
+    },
+    "task_type": "css_selector_generation",
+    "domain": "jobs"
+  },
+  {
+    "instruction": "Generate CSS selectors to extract product information from the following HTML",
+    "input": "<div class=\"product-container\">\n                <div class=\"product-header\">\n                    <h1 class=\"product-title\">Secured directional time-frame</h1>\n                    <div class=\"price-section\">\n                        <span class=\"current-price\">$801.47</span>\n                    </div>\n                </div>\n                <div class=\"product-details\">\n                    <p class=\"description\">Late kind team wrong figure perform. Whether between several personal enough ball dream necessary. Able late order fact.</p>\n                    <div class=\"rating\">\n                        <span class=\"stars\">4.9</span>\n                        <span class=\"review-count\">(875 reviews)</span>\n                    </div>\n                </div>\n            </div>",
+    "output": {
+      "selectors": {
+        "title": [
+          ".product-title",
+          ".title",
+          ".product-name"
+        ],
+        "price": [
+          ".current-price",
+          ".price",
+          ".product-price"
+        ],
+        "description": [
+          ".description",
+          ".desc",
+          ".product-desc"
+        ],
+        "rating": [
+          ".stars",
+          ".rating-value",
+          ".product-rating"
+        ],
+        "reviews": [
+          ".review-count",
+          ".total-reviews",
+          ".product-rating"
+        ]
+      },
+      "extraction_strategy": "Extract product information from e-commerce page",
+      "data_fields": [
+        "title",
+        "price",
+        "description",
+        "rating",
+        "reviews"
+      ],
+      "confidence": 0.95
+    },
+    "task_type": "css_selector_generation",
+    "domain": "ecommerce"
+  },
+  {
+    "instruction": "Extract CSS selectors for filter elements and describe interaction steps",
+    "input": "<div class=\"filters\">\n            <div class=\"price-filter\">\n                <label>Price Range</label>\n                <input type=\"range\" class=\"price-min\" name=\"min_price\" min=\"0\" max=\"1000\" value=\"100\">\n                <input type=\"range\" class=\"price-max\" name=\"max_price\" min=\"0\" max=\"1000\" value=\"500\">\n            </div>\n            <button class=\"apply-filters\">Apply Filters</button>\n        </div>",
+    "output": {
+      "filter_type": "price_range",
+      "selectors": {
+        "min_price": [
+          ".price-min",
+          "input[name='min_price']"
+        ],
+        "max_price": [
+          ".price-max",
+          "input[name='max_price']"
+        ],
+        "apply_button": [
+          ".apply-filters",
+          "button:contains('Apply')"
+        ]
+      },
+      "strategy": "Set price range values and click apply",
+      "interaction_steps": [
+        "Set minimum price slider",
+        "Set maximum price slider",
+        "Click apply filters button"
+      ],
+      "confidence": 0.93
+    },
+    "task_type": "filter_interaction",
+    "domain": "general"
+  },
+  {
+    "instruction": "Generate selectors for this HTML that has missing price information",
+    "input": "<div class=\"product-container\">\n            <h1 class=\"title\">Product Name</h1>\n            <!-- Price element missing -->\n            <p class=\"description\">Product description here</p>\n        </div>",
+    "output": {
+      "error_type": "missing_element",
+      "selectors": {
+        "title": [
+          ".title"
+        ],
+        "price": [],
+        "description": [
+          ".description"
+        ]
+      },
+      "extraction_strategy": "Extract available fields, handle missing price gracefully",
+      "fallback_strategy": "Look for alternative price selectors or mark as unavailable",
+      "confidence": 0.7
+    },
+    "task_type": "error_handling",
+    "domain": "ecommerce"
+  },
+  {
+    "instruction": "Identify pagination elements and suggest navigation strategy",
+    "input": "<div class=\"content-container\" data-infinite-scroll=\"true\">\n            <div class=\"results-list\">\n                <!-- Results here -->\n            </div>\n            <div class=\"loading-indicator\" style=\"display: none;\">Loading...</div>\n        </div>",
+    "output": {
+      "pagination_type": "infinite_scroll",
+      "selectors": {
+        "container": [
+          "[data-infinite-scroll]",
+          ".content-container"
+        ],
+        "loading_indicator": [
+          ".loading-indicator",
+          ".spinner"
+        ],
+        "results_container": [
+          ".results-list",
+          ".items"
+        ]
+      },
+      "strategy": "Scroll to bottom to trigger infinite loading",
+      "confidence": 0.88
+    },
+    "task_type": "pagination_detection",
+    "domain": "general"
+  },
+  {
+    "instruction": "Analyze this HTML structure and provide CSS selectors for data extraction",
+    "input": "<article class=\"listing\" data-job-id=\"6881\">\n                <header class=\"listing-header\">\n                    <h3 class=\"position\">Company secretary</h3>\n                    <div class=\"employer\">Mccullough, Hunter and Estrada</div>\n                </header>\n                <div class=\"details\">\n                    <div class=\"location-info\">Richardport, Oklahoma</div>\n                    <div class=\"compensation\">$88k - $84k</div>\n                    <div class=\"summary\">Inside wait quality total past. Image street fight decision size.\nLet kind degree list top somebody. Probably exist professional people. Stand seem pull different. Challenge animal worker particularly shoulder.</div>\n                </div>\n            </article>",
+    "output": {
+      "selectors": {
+        "title": [
+          ".job-title",
+          ".position"
+        ],
+        "company": [
+          ".company-name",
+          ".employer"
+        ],
+        "location": [
+          ".location",
+          ".location-info"
+        ],
+        "salary": [
+          ".salary",
+          ".compensation"
+        ],
+        "description": [
+          ".job-description p",
+          ".summary"
+        ]
+      },
+      "extraction_strategy": "Extract job posting details from listing page",
+      "data_fields": [
+        "title",
+        "company",
+        "location",
+        "salary",
+        "description"
+      ],
+      "confidence": 0.92
+    },
+    "task_type": "css_selector_generation",
+    "domain": "jobs"
+  },
+  {
+    "instruction": "Analyze this filter interface and provide interaction strategy",
+    "input": "<div class=\"filters\">\n            <div class=\"price-filter\">\n                <label>Price Range</label>\n                <input type=\"range\" class=\"price-min\" name=\"min_price\" min=\"0\" max=\"1000\" value=\"100\">\n                <input type=\"range\" class=\"price-max\" name=\"max_price\" min=\"0\" max=\"1000\" value=\"500\">\n            </div>\n            <button class=\"apply-filters\">Apply Filters</button>\n        </div>",
+    "output": {
+      "filter_type": "price_range",
+      "selectors": {
+        "min_price": [
+          ".price-min",
+          "input[name='min_price']"
+        ],
+        "max_price": [
+          ".price-max",
+          "input[name='max_price']"
+        ],
+        "apply_button": [
+          ".apply-filters",
+          "button:contains('Apply')"
+        ]
+      },
+      "strategy": "Set price range values and click apply",
+      "interaction_steps": [
+        "Set minimum price slider",
+        "Set maximum price slider",
+        "Click apply filters button"
+      ],
+      "confidence": 0.93
+    },
+    "task_type": "filter_interaction",
+    "domain": "general"
+  }
+]
